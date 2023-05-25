@@ -13,9 +13,9 @@
 ## Introduction
 
 Diff-PGD utilizes strong prior knowledge of Diffusion Model to generate adversarial samples with higher steathiness and controllability. Diff-PGD has the following edges:
-- higher steathiness and controllability 
-- easy to apply to different scenarios 
-- higher transferability and anti-purification power
+- Higher steathiness and controllability 
+- Easy to apply to different scenarios (e.g. global, region, style-based, physical world)
+- Higher transferability and anti-purification power
 
 
 
