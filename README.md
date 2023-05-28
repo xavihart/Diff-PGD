@@ -31,9 +31,15 @@ mislead the models. While they can be easily generated using gradient-based tech
 
 
 ## TODO
-- [ ] Make extensive comparisons for different weight scaling functions.
+- [ ] Paper is out
 
-- [x] asd
+- [x] Code for global attack
+
+- [x] Code for style-based attack
+
+- [x] Code for physical-world attack
+
+- [x] Publish pip version
 
 
 
