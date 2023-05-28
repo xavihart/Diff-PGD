@@ -33,13 +33,13 @@ mislead the models. While they can be easily generated using gradient-based tech
 ## TODO
 - [ ] Paper is out
 
-- [x] Code for global attack
+- [ ] Code for global attack
 
-- [x] Code for style-based attack
+- [ ] Code for style-based attack
 
-- [x] Code for physical-world attack
+- [ ] Code for physical-world attack
 
-- [x] Publish pip version
+- [ ] Publish pip version
 
 
 
