@@ -31,9 +31,9 @@ mislead the models. While they can be easily generated using gradient-based tech
 
 
 ## TODO
-[x] asd
+- [ ] Make extensive comparisons for different weight scaling functions.
 
--[] asd
+- [x] asd
 
 
 
