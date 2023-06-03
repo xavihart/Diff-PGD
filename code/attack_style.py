@@ -21,11 +21,6 @@ import torch.optim as optim
 
 
 
-
-
-        
-
-
 class Region_Denoised_Classifier(torch.nn.Module):
     def __init__(self, diffusion, model, classifier, t, mask):
         super().__init__()
@@ -197,32 +192,16 @@ def Attack_Region_Style(exp_name, classifier, device, respace, t, eps=16, iter=1
     classifier = classifier.to(device)
     classifier.eval()
     
-    # dataset = get_dataset(
-    #     'imagenet', split='test'
-    # )
+
     
 
     model, diffusion = get_imagenet_dm_conf(device=device, respace=respace)
     
-    skip = 200
+    
     c = 0
     a = 0
 
 
-
-    # x = load_png(p='physical-attack-data/content/off-target/off-target5.jpg', size=224)[None, ...].to(device)
-    # mask = load_png(p='physical-attack-data/content-mask/off-target5.jpg', size=224)[None, ...].to(device) # red flower
-    # style_refer = load_png(p='physical-attack-data/style/off-target/red_flower.jpg', size=224)[None, ...].to(device)
-
-
-    # x = load_png(p='physical-attack-data/content/backpack/backpack3.jpg', size=224)[None, ...].to(device)
-    # mask = load_png(p='physical-attack-data/content-mask/backpack3.jpg', size=224)[None, ...].to(device)
-    # style_refer = load_png(p='physical-attack-data/style/backpack/15.jpg', size=224)[None, ...].to(device) # blue
-
-    # style_refer = load_png('physical-attack-data/style/t-shirt/tar16.png', size=224)[None, ...].to(device) # fire style
-    
-    
-    # =========== traj ========
 
     if 'tra' in exp_name:
         x = load_png(f'data/advcam_dataset/other_imgs/img/{exp_name}.jpg', 224)[None, ...].to(device)
@@ -244,7 +223,7 @@ def Attack_Region_Style(exp_name, classifier, device, respace, t, eps=16, iter=1
         mask = load_png(f'data/advcam_dataset/other_imgs/seg/car-mask.jpg', 224)[None, ...].to(device)
         style_refer = load_png(f'data/advcam_dataset/other_imgs/img/car-style.jpg', 224)[None, ...].to(device)
         
-        
+
     
     # ========== lamp =========
     if exp_name == 'lamp':
@@ -275,32 +254,32 @@ def Attack_Region_Style(exp_name, classifier, device, respace, t, eps=16, iter=1
         mask = load_png(f'data/advcam_dataset/other_imgs/seg/umbrella-mask.jpg', 224)[None, ...].to(device)
         style_refer = load_png(f'data/advcam_dataset/other_imgs/img/umbrella-style.jpg', 224)[None, ...].to(device)
         
-        
+    
+    # customize your own style with a different exp_name
         
 
 
     
     mask = (mask > 0).float() # 1 means umasked, 0 means dont need to modify
-
-    x_s = style_transfer(x, style_refer, mask, content_w=1, style_w=4000, num_iters=1000)
-    si(torch.cat([x, mask, style_refer, x_s*mask+x*(1-mask)], -1), save_path + f'/{exp_name}_style_trans.png')
-    # style_sdedit = Style_SDEdit(diffusion, model, None, x_ref=style_refer, x_content=x)
-    # x_p = style_sdedit.style_sdedit(t, mask)
-
-    # si(torch.cat([x, style_refer, mask, x_p, 100*(x_p-x)], -1), 'x_style_trans.png')
-    # exit(0)
     
 
+    # do style transfer first
+    x_s = style_transfer(x, style_refer, mask, content_w=1, style_w=4000, num_iters=1000)
+    si(torch.cat([x, mask, style_refer, x_s*mask+x*(1-mask)], -1), save_path + f'/{exp_name}_style_trans.png')
+ 
 
     y_pred = classifier(x).argmax(1) # original prediction
     print(y_pred)
     x_s = x_s*mask+x*(1-mask)
     x_s = x_s.detach()
+
+    # generate DIFF-PGD Samples
     x_adv_diff_region = generate_x_adv_denoised_region(x_s, y_pred, diffusion, model, classifier, pgd_conf, device, t, mask)
         
-
-    net = Region_Denoised_Classifier(diffusion, model, classifier, t, mask)
-    x_adv_diff_p_region = net.sdedit(x_adv_diff_region, t, True, mask)
+    # get purified sample
+    with torch.no_grad():
+        net = Region_Denoised_Classifier(diffusion, model, classifier, t, mask)
+        x_adv_diff_p_region = net.sdedit(x_adv_diff_region, t, True, mask)
 
     print(classifier(x_adv_diff_region).argmax(1))
     y_final=classifier(x_adv_diff_p_region).argmax(1).item()
@@ -311,53 +290,13 @@ def Attack_Region_Style(exp_name, classifier, device, respace, t, eps=16, iter=1
             10*torch.cat([x-x, x_s-x, x_adv_diff_region-x_s, x_adv_diff_p_region-x_adv_diff_region, mask], -1)
         ],-2)
         , save_path + f'/{exp_name}_final{y_final}.png')
-    
-    
-    # si(torch.cat(
-    #     [torch.cat([x_pgd_region, x_adv_diff_region, x_adv_diff_p_region, region_mask], -1),
-    #         torch.cat([x-x_pgd_region, x-x_adv_diff_region, x-x_adv_diff_p_region, region_mask], -1)
-    #     ],-2)
-    #     , save_path + f'/{i}.png')
-    
-
-    # pkg = {
-    #     'x': x,
-    #     'y': y,
-    #     'x_adv': x_adv_diff_region,
-    #     'x_adv_diff': x_adv_diff_p_region,
-    #     'x_pgd': x_pgd_region
-    # }
 
 
-    
-    # torch.save(pkg, save_path+f'{i}.bin')
-    
-
-    # print(classifier(x_adv_diff_region).argmax(1)==y_pred,
-    #       classifier(x_adv_diff_p_region).argmax(1)==y_pred,
-    #       classifier(x_pgd_region).argmax(1)==y_pred)
-    # print((x_pgd_region - x).abs().max(), 
-    #       (x_adv_diff_region - x).abs().max(),
-    #       (x_adv_diff_p_region - x).abs().max())
-
-
-
-
-    # our repain attack
-
-# print(a/c)
-
-    
-
-
-
+for exp_name in ['tra4', 'tra1', 'tra5', 'tra6', 'leaf', 'car', 'lamp', 'car']:
         
+    Attack_Region_Style(exp_name, 'resnet50', 0, 'ddim40', t=4, eps=64, iter=10)
 
-# for exp_name in ['tra4', 'tra1', 'tra5', 'tra6', 'leaf', 'car', 'lamp']:
+# for exp_name in ['car2']:
         
-#     Attack_Region_Style(exp_name, 'resnet50', 0, 'ddim40', t=4, eps=64, iter=10)
-
-for exp_name in ['car2']:
-        
-    Attack_Region_Style(exp_name, 'resnet50', 0, 'ddim10', t=4, eps=96, iter=100)
+#     Attack_Region_Style(exp_name, 'resnet50', 0, 'ddim10', t=4, eps=96, iter=100)
 

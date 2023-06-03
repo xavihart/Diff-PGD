@@ -142,7 +142,7 @@ def generate_x_adv_denoised_v2(x, y, diffusion, model, classifier, pgd_conf, dev
 
 
 
-def Attack_Global(classifier, device, respace, t, eps=16, iter=10, name='attack_global', alpha=2, version='v1'):
+def Attack_Global(classifier, device, respace, t, eps=16, iter=10, name='attack_global', alpha=2, version='v1', skip=200):
     
     
     pgd_conf = gen_pgd_confs(eps=eps, alpha=alpha, iter=iter, input_range=(0, 1))
@@ -165,7 +165,6 @@ def Attack_Global(classifier, device, respace, t, eps=16, iter=10, name='attack_
 
     model, diffusion = get_imagenet_dm_conf(device=device, respace=respace)
     
-    skip = 200
     c = 0
 
     for i in tqdm(range(dataset.__len__())):
@@ -210,8 +209,6 @@ def Attack_Global(classifier, device, respace, t, eps=16, iter=10, name='attack_
         si(torch.cat([x, x_adv, pred_x0], -1), save_path + f'{i}.png')
         print(y_pred, classifier(x_adv).argmax(1), classifier(pred_x0).argmax(1))
 
-
-        
 
         c += 1
 

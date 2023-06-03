@@ -110,7 +110,7 @@ def generate_x_adv_denoised_region(x, y, diffusion, model, classifier, pgd_conf,
 
 
 
-def Attack_Region(classifier, device, respace, t, eps=16, iter=10, name='attack_region'):
+def Attack_Region(classifier, device, respace, t, eps=16, iter=10, name='attack_region', skip = 200, ratio=0.4):
     
     
     pgd_conf = gen_pgd_confs(eps=eps, alpha=1, iter=iter, input_range=(0, 1))
@@ -137,7 +137,7 @@ def Attack_Region(classifier, device, respace, t, eps=16, iter=10, name='attack_
 
     model, diffusion = get_imagenet_dm_conf(device=device, respace=respace)
     
-    skip = 200
+    
     c = 0
     a = 0
 
@@ -159,7 +159,7 @@ def Attack_Region(classifier, device, respace, t, eps=16, iter=10, name='attack_
                     
         # pgd attack_region
 
-        region_mask = 1 - gen_mask(x, type='square', ratio=0.4) # same shape as x, remain a square valued 1, other 0
+        region_mask = 1 - gen_mask(x, type='square', ratio=ratio) # same shape as x, remain a square valued 1, other 0
 
 
         x_pgd_region = gen_region_pgd_sample(classifier, x, region_mask, iter=iter, eps=eps)
@@ -172,14 +172,13 @@ def Attack_Region(classifier, device, respace, t, eps=16, iter=10, name='attack_
         c += 1
 
   
-        # print(classifier(x_pgd_region).argmax(1), y_pred)
-
-
+        # Generate Diff-rPGD samples: x^n
         x_adv_diff_region = generate_x_adv_denoised_region(x, y_pred, diffusion, model, classifier, pgd_conf, device, t, region_mask)
         
-
-        net = Region_Denoised_Classifier(diffusion, model, classifier, t, region_mask)
-        x_adv_diff_p_region = net.sdedit(x_adv_diff_region, t, True, region_mask)
+        # x^n -> x^n_0
+        with torch.no_grad():
+            net = Region_Denoised_Classifier(diffusion, model, classifier, t, region_mask)
+            x_adv_diff_p_region = net.sdedit(x_adv_diff_region, t, True, region_mask)
 
         
         

@@ -195,6 +195,8 @@ def Attack_Physics(mode, bkg_name, patch_name, classifier, device, respace, t, t
         margin=0.2
     else:
         raise "Unavailable Background!"
+    
+    # add your own dataset here
 
 
         
@@ -245,20 +247,10 @@ def Attack_Physics(mode, bkg_name, patch_name, classifier, device, respace, t, t
             loss -= out[:, y_target]
         
 
-        # apply content loss
-        # if mode == 'diff-pgd' or mode == 'advcam':
-        #     model(x_new)
-        #     for cl in content_losses:
-        #         loss += cl.backward()
-        #     loss += smooth_loss(x_new, s_m)
-        
         
         loss.backward()
 
-        # mse = nn.MSELoss()
-        # loss += 0.1 * mse(x_new, patch)
-            
-            # if loss_max is None:
+
         loss_l.append(loss.item())
 
         
@@ -269,7 +261,6 @@ def Attack_Physics(mode, bkg_name, patch_name, classifier, device, respace, t, t
         plt.close()
         
 
-        # d.grad.data.zero_()
         
         if mode == 'diff-pgd':
             x_p = edit_net(x + d)
@@ -280,8 +271,6 @@ def Attack_Physics(mode, bkg_name, patch_name, classifier, device, respace, t, t
 
             si(torch.cat([x, torch.clip(x+d, 0, 1), x_p], -1), save_path + f'{patch_name}-{bkg_name}-{iter_id}.png')
         
- # 187: Yorkshire terrier       
-
 
 
 
@@ -300,17 +289,15 @@ def Attack_Physics(mode, bkg_name, patch_name, classifier, device, respace, t, t
 # Attack_Physics(mode='advcam', bkg_name='computer_mouse', patch_name='apple', classifier='resnet50', \
 #                 device=0, respace=None, t=None, target=None, c_w=1, s_m=0.01, iter=4000, name='attack_physics')
 
-Attack_Physics(mode='advcam', bkg_name='bag', patch_name='cat', classifier='resnet50', \
-                device=0, respace=None, t=None, target=187, c_w=1, s_m=0.01, iter=4000, name='attack_physics')
-######################## advcam #####################################
-
-
-
-
-######################## diff-pgd #####################################
-# Attack_Physics(mode='diff-pgd', bkg_name='computer_mouse', patch_name='apple', classifier='resnet50', \
-#                 device=0, respace='ddim10', t=2, target=None, c_w=1, s_m=0.01, iter=4000, name='attack_physics')
 # Attack_Physics(mode='advcam', bkg_name='bag', patch_name='cat', classifier='resnet50', \
-#                 device=0, respace='ddim10', t=2, target=187, c_w=0, s_m=0.01, iter=4000, name='attack_physics')
-######################## diff-pgd #####################################
+#                 device=0, respace=None, t=None, target=187, c_w=1, s_m=0.01, iter=4000, name='attack_physics')
+# ######################## advcam #####################################
+
+
+
+
+####################### diff-pgd #####################################
+Attack_Physics(mode='diff-pgd', bkg_name='computer_mouse', patch_name='apple', classifier='resnet50', \
+                device=0, respace='ddim10', t=2, target=None, c_w=1, s_m=0.01, iter=4000, name='attack_physics')
+####################### diff-pgd #####################################
 
