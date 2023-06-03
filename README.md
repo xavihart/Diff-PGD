@@ -12,28 +12,82 @@
 
 ![](figures/pull_figures.png)
 
+TL;DR: PGD + Diffusion Model = stronger adversarial attack
+
+## Content
+- [Introduction](#introduction)
+- [Envs](#envs)
+- [Run Global Attack](#run-global-attack)
+- [Run Regional Attack](#run-regional-attack)
+- [Run Style-based Attack](#run-style-based-attack)
+- [Run Physical World Attack](#run-physical-world-attack)
+- [Updates](#todo)
+
 ## Introduction
 
 Diff-PGD utilizes strong prior knowledge of Diffusion Model to generate adversarial samples with higher steathiness and controllability. Diff-PGD has the following edges:
-- Higher steathiness and controllability 
-- Easy to apply to different scenarios (e.g. global, region, style-based, physical world)
-- Higher transferability and anti-purification power
+- Generate adversarial samples with higher **steathiness** and **controllability** 
+- Can be easily applied to different scenarios (e.g. global, region, style-based, physical world)
+- Higher **transferability** and **anti-purification** power
+
+
+> Full paper link: https://arxiv.org/abs/2305.16494
+
+## Envs
+
+1. Creat conda env using `env.yml`:
+```
+conda env create -f environment.yml
+```
+2. Activate conda env:
+```
+source activate diff-pgd
+```
+3. Download [[DM checkpoint]](https://openaipublic.blob.core.windows.net/diffusion/jul-2021/256x256_diffusion_uncond.pt) and put them into `ckpt/`
+
+
+4. Prepare imagenet dataset, and in `code/dataset.py:17`, replace it with:
+```
+os.environ['IMAGENET_LOC_ENV'] = YOUR_IMAGENET_PATH
+```
+
+## Run Global Attack
+
+Here we provide a code snipplet to run gobal attack:
+
+```
+python code/attack_global.py
+```
+
+or you can import `Attack_Global` from `code/attack_global.py` to build your customized settings:
+
+```
+Attack_Global(classifier, device, respace, t, eps, iter, name, alpha version)
+
+[classifier]:                                       target classifier to attack
+[device]:                                                        device, gpu id
+[respace]                              diffusion model accelerator, e.g. ddim10
+[t]                                                      reverse step in SDEdit
+[eps]                                                       l_inf budget of PGD
+[iter]                                                 iterations number of PGD
+[name]                                                          name of the exp
+[alpha]                                                        step size of PGD
+[version]                base version v1, v2 is a faster version to be released 
+
+``` 
+
+## Run Regional Attack
 
 
 
-## Abstract
-
->Neural networks are known to be susceptible to adversarial samples: small variations of natural examples crafted to deliberately
-mislead the models. While they can be easily generated using gradient-based techniques in digital and physical scenarios, they often differ greatly from the actual data distribution of natural images, resulting in a trade-off between strength and stealthiness. In this paper, we propose a novel framework dubbed Diffusion-Based Projected Gradient Descent (Diff-PGD) for generating realistic adversarial samples. By exploiting a gradient guided by a diffusion model, Diff-PGD ensures that adversarial samples remain close to the original data distribution while maintaining their effectiveness. Moreover, our framework can be easily customized for specific tasks such as digital attacks, physical-world attacks, and style-based attacks. Compared with existing methods for generating natural-style adversarial samples, our framework enables the separation of optimizing adversarial loss from other surrogate losses (e.g., content/smoothness/style loss), making it more stable and controllable. Finally, we demonstrate that the samples generated using Diff-PGD have better transferability and anti-purification power than traditional gradient-based methods.
+## Run Style-based Attack
 
 
-
-## News
- - The code will be released soon!
+## Run Physical World Attack
 
 
 ## TODO
-- [ ] Paper is out
+- [x] Paper is out
 
 - [ ] Code for global attack
 

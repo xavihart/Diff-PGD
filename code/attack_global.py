@@ -15,6 +15,8 @@ from attack_tools import gen_pgd_confs
 
 
 
+
+
 class Denoised_Classifier(torch.nn.Module):
     def __init__(self, diffusion, model, classifier, t):
         super().__init__()
