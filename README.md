@@ -15,6 +15,7 @@
 TL;DR: PGD + Diffusion Model = stronger adversarial attack
 
 ## Content
+- [News](#news)
 - [Introduction](#introduction)
 - [Envs](#envs)
 - [Run Global Attack](#run-global-attack)
@@ -22,6 +23,15 @@ TL;DR: PGD + Diffusion Model = stronger adversarial attack
 - [Run Style-based Attack](#run-style-based-attack)
 - [Run Physical World Attack](#run-physical-world-attack)
 - [Updates](#todo)
+
+## News:
+
+:star: [2023-06-03] Faster V2 will be released soon
+
+:star: [2023-06-03] We release the code!
+
+:star: [2023-05-25] Our paper is released:  https://arxiv.org/abs/2305.16494
+
 
 ## Introduction
 
@@ -31,7 +41,7 @@ Diff-PGD utilizes strong prior knowledge of Diffusion Model to generate adversar
 - Higher **transferability** and **anti-purification** power
 
 
-> Full paper link: https://arxiv.org/abs/2305.16494
+
 
 ## Envs
 
