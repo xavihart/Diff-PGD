@@ -22,17 +22,19 @@ Diff-PGD utilizes strong prior knowledge of Diffusion Model to generate adversar
 
 
 ## Content
-- [News](#news)
+- [Introduction](#introduction)
+- [News](#news-)
 - [Envs](#envs)
 - [Run Global Attack](#run-global-attack)
 - [Run Regional Attack](#run-regional-attack)
 - [Run Style-based Attack](#run-style-based-attack)
 - [Run Physical World Attack](#run-physical-world-attack)
-- [Updates](#todo)
+- [Some other useful code descriptions](#some-other-useful-code-descriptions)
 
-## News:
 
-:star: [2023-06-03] Accelerated version will be released soon
+## News
+
+:star: [Coming Soon] Accelerated version (v2) will be released soon
 
 :star: [2023-06-03] We release the code!
 
