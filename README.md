@@ -10,6 +10,8 @@
 </div>
 
 
+![](figures/pull_figures.png)
+
 ## Introduction
 
 Diff-PGD utilizes strong prior knowledge of Diffusion Model to generate adversarial samples with higher steathiness and controllability. Diff-PGD has the following edges:
