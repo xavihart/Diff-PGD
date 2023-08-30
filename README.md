@@ -47,7 +47,7 @@ Diff-PGD utilizes strong prior knowledge of Diffusion Model to generate adversar
 
 1. Creat conda env using `env.yml`:
 ```
-conda env create -f environment.yml
+conda env create -f env.yml
 ```
 2. Activate conda env:
 ```
