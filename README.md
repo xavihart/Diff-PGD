@@ -34,7 +34,9 @@ Diff-PGD utilizes strong prior knowledge of Diffusion Model to generate adversar
 
 ## News
 
-:star: [Coming Soon] Accelerated version (v2) will be released soon
+:star: [2023-09-21] Diff-PGD is accepted by NeurIPS 2023!
+
+:star: [2023-09-21] Accelerated version (v2) can be now used
 
 :star: [2023-06-03] We release the code!
 
